@@ -26,16 +26,16 @@ utworzy³em ten rozdzia³ na dwa pliki aby oddzieliæ funkcje gry od logiki gry
 #define left_plane_upperOffset 20
 #define left_plane_lowerOffset 20
 
-#define right_plane_rightOffset 20
+#define right_plane_rightOffset 15
 #define right_plane_leftOffset 20
 #define right_plane_upperOffset 20
 #define right_plane_lowerOffset 20
 
-//WIPIPIPIPIP
+
 #define left_plane_lenght ((screenOffset_width / 2.0) - left_plane_rightOffset - (left_screenOffset+left_plane_leftOffset))
 #define left_plane_height ((2 * screenOffset_height / 3.0) - left_plane_lowerOffset - (left_plane_upperOffset+upper_screenOffset))
-#define right_plane_lenght ((screenOffset_width / 2.0) + (screenOffset_width / 2.0) - 20 - (screenOffset_width / 2.0) + 20)
-#define right_plane_height ((2 * screenOffset_height / 3.0) - 20 - 25)
+#define right_plane_lenght ((screenOffset_width - right_plane_rightOffset) - ((screenOffset_width / 2.0) + right_plane_leftOffset))
+#define right_plane_height (((2 * screenOffset_height / 3.0) - right_plane_lowerOffset) - (right_plane_upperOffset+upper_screenOffset))
 
 //funkcje dla gry
 void displayBoard();

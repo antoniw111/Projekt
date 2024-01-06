@@ -24,7 +24,7 @@ void displayBoard()
 		//gracz
 
 
-	// WIPIPIPIPIPIPIPIPIPIPIP
+
 	//gracz
 	line(left_screenOffset+left_plane_leftOffset, upper_screenOffset+left_plane_upperOffset,
 		left_screenOffset + left_plane_leftOffset, (2 * screenOffset_height / 3.0) - left_plane_lowerOffset);
@@ -46,8 +46,14 @@ void displayBoard()
 	//szachownica dla garcza i prawie dla komputera
 	for (int i = 1; i < 10; i++)
 	{
+		//szachownica dla gracza
 		line((i / 10.0) * left_plane_lenght + left_plane_leftOffset+left_screenOffset,upper_screenOffset+left_plane_upperOffset , (i / 10.0) * left_plane_lenght + left_plane_leftOffset + left_screenOffset, (2 * screenOffset_height / 3.0) - left_plane_lowerOffset);
-		line(left_screenOffset+left_plane_leftOffset, (i / 10.0) * left_plane_height + left_plane_upperOffset+upper_screenOffset, (screenOffset_width / 2.0) - left_plane_rightOffset, (i / 10.0) * left_plane_height + left_plane_rightOffset+ upper_screenOffset);
+		line(left_screenOffset+left_plane_leftOffset, (i / 10.0) * left_plane_height + left_plane_upperOffset+upper_screenOffset, (screenOffset_width / 2.0) - left_plane_rightOffset, (i / 10.0) * left_plane_height + left_plane_upperOffset+ upper_screenOffset);
+
+		line((i / 10.0) * right_plane_lenght + right_plane_leftOffset + screenOffset_width/2.0, upper_screenOffset + right_plane_upperOffset, (i / 10.0) * right_plane_lenght + right_plane_leftOffset + screenOffset_width / 2.0, (2 * screenOffset_height / 3.0) - right_plane_lowerOffset);
+		line(screenOffset_width / 2.0 + right_plane_leftOffset, (i / 10.0) * right_plane_height + right_plane_upperOffset + upper_screenOffset, screenOffset_width - right_plane_rightOffset, (i / 10.0) * right_plane_height + right_plane_upperOffset + upper_screenOffset);
+
+
 	}
 
 }

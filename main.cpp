@@ -7,7 +7,6 @@ utworzy³em ten rozdzia³ na dwa pliki aby oddzieliæ funkcje gry od logiki gry*/
 
 #include <stdio.h>
 #include <math.h>
-#include <Windows.h>
 #include "winbgi2.h"
 #include "warships.h"
 
