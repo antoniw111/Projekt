@@ -21,9 +21,15 @@
     <ClCompile Include="winbgi2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="warships.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="winbgi2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="warships.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
