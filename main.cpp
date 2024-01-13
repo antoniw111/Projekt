@@ -13,8 +13,14 @@ utworzy³em ten rozdzia³ na dwa pliki aby oddzieliæ funkcje gry od logiki gry*/
 int main()
 {
 	graphics(swidth, sheight);
-	displayBoard();
-	
-	wait();
+	switch (welcomeScreen())
+	{
+	case 0:
+		return 0;
+	case 1:
+		displayBoard();
+		wait();
+		break;
+	}
 	return 0;
 }

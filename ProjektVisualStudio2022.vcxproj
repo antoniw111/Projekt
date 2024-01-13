@@ -137,6 +137,11 @@
     <ClInclude Include="warships.h" />
     <ClInclude Include="winbgi2.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Desktop\Nowy folder\end.png" />
+    <Image Include="..\..\..\..\Desktop\Nowy folder\start.png" />
+    <Image Include="..\..\..\..\Desktop\Nowy folder\win.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

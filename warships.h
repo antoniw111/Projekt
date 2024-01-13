@@ -36,8 +36,10 @@ utworzy³em ten rozdzia³ na dwa pliki aby oddzieliæ funkcje gry od logiki gry
 #define left_plane_height ((2 * screenOffset_height / 3.0) - left_plane_lowerOffset - (left_plane_upperOffset+upper_screenOffset))
 #define right_plane_lenght ((screenOffset_width - right_plane_rightOffset) - ((screenOffset_width / 2.0) + right_plane_leftOffset))
 #define right_plane_height (((2 * screenOffset_height / 3.0) - right_plane_lowerOffset) - (right_plane_upperOffset+upper_screenOffset))
+#define title_upperOffset 200
 
 //funkcje dla gry
 void displayBoard();
+int welcomeScreen();
 
 #endif /* zabezpieczenie aby nie "wkleiæ" pliku .h dwukrotnie*/

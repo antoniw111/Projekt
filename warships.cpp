@@ -4,17 +4,13 @@ Nr indeksu: 333516
 Gra w Statki
 
 utworzy³em ten rozdzia³ na dwa pliki aby oddzieliæ funkcje gry od logiki gry*/
-
+#include <stdio.h>
+#include <windows.h>
 #include "warships.h"
 #include "winbgi2.h"
 void displayBoard()
 {
-	//obramowanie
-	/*line(5, 5, 990, 5);
-	line(5, 5, 5, 780);
-	line(990, 5, 990, 780);
-	line(5, 780, 990, 780);*/
-	//powy¿sze instrukcje zast¹pi³em rectangle'm
+	clear();
 	rectangle(5, 5, x_end, y_end);
 	//podzia³ka na graczy
 	line(screenOffset_width / 2.0, 5, screenOffset_width / 2.0, y_end);
@@ -57,3 +53,40 @@ void displayBoard()
 	}
 
 }
+
+int welcomeScreen()
+{
+	int option = 0;
+	const char* welcome_msg = "WARSHIPS v0.1";
+	settextjustify(CENTER_TEXT, CENTER_TEXT);
+	settextstyle(DEFAULT_FONT, HORIZ_DIR, 7);
+	outtextxy(1000 / 2., title_upperOffset, welcome_msg);
+	settextstyle(DEFAULT_FONT, HORIZ_DIR, 5);
+	outtextxy(1000 / 2., title_upperOffset + 150, "Play");
+	outtextxy(1000 / 2., title_upperOffset + 300, "Quit");
+	//while (!(mousedown())) //FUNKCJA DO TESTÓW
+	//{
+	//	printf("x: %d y: %d\n", mousecurrentx(), mousecurrenty());
+	//	system("cls");
+	//}
+	while (true)
+	{
+		if (mousedown())
+		{
+			if (mouseclickx() > 422 && mouseclickx() < 581 && mouseclicky() > 324 && mouseclicky() < 357) option = 1;
+			if (mouseclickx() > 425 && mouseclickx() < 575 && mouseclicky() > 473 && mouseclicky() < 500) option = 2;
+		}
+		switch (option)
+		{
+		case 0:
+			break;
+		case 1:
+			printf("PLAYING MODE\n");
+			return 1;
+		case 2:
+			return 0;
+		}
+	}
+	return 0;
+}
+
