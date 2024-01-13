@@ -37,9 +37,23 @@ utworzy³em ten rozdzia³ na dwa pliki aby oddzieliæ funkcje gry od logiki gry
 #define right_plane_lenght ((screenOffset_width - right_plane_rightOffset) - ((screenOffset_width / 2.0) + right_plane_leftOffset))
 #define right_plane_height (((2 * screenOffset_height / 3.0) - right_plane_lowerOffset) - (right_plane_upperOffset+upper_screenOffset))
 #define title_upperOffset 200
+//struktury 
+typedef struct
+{
+	int x_front;
+	int x_back;
+	int y_front;
+	int y_back;
+}Ship;
 
 //funkcje dla gry
 void displayBoard();
 int welcomeScreen();
+void cords_to_matrix(int x, int y, int** tab, int mode); // mode = 0, lewa plansza, czyli gracz; mode = 1, prawa plansza, czyli, komputer
+void drawShips(Ship* ship_tab,int player_type); // player_type = 0, analogicznie jak wyzej
+void random_CPU_ships(Ship* enemy_tab,int* control_tab);
+
+
+
 
 #endif /* zabezpieczenie aby nie "wkleiæ" pliku .h dwukrotnie*/

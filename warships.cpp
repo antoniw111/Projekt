@@ -5,6 +5,8 @@ Gra w Statki
 
 utworzy³em ten rozdzia³ na dwa pliki aby oddzieliæ funkcje gry od logiki gry*/
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include <windows.h>
 #include "warships.h"
 #include "winbgi2.h"
@@ -90,3 +92,83 @@ int welcomeScreen()
 	return 0;
 }
 
+void cords_to_matrix(int x, int y, int** tab, int mode)
+{
+	if (mode)
+	{
+
+	}
+	else
+	{
+
+	}
+}
+void drawShips(Ship* ship_tab,int player_type)
+{
+
+}
+void random_CPU_ships(Ship* enemy_tab, int** control_tab)
+{
+	int ship_type = 1;
+	int ship_made[4] = { 4,3,2,1 };
+	srand(time(NULL));
+	for (int i = 0; i < 10; i++)
+	{
+		switch (ship_type)
+		{
+		case 1:
+			if (ship_made[ship_type - 1] == 0)
+			{
+				ship_type++;
+				break;
+			}
+			while (true)
+			{
+				int w = rand() % 10;
+				int k = rand() % 10;
+				if (control_tab[w][k] == 0 &&
+					control_tab[w - 1][k] == 0 &&
+					control_tab[w - 1][k + 1] == 0 &&
+					control_tab[w][k + 1] == 0 && //x=k;y=w
+					control_tab[w + 1][k + 1] == 0 &&
+					control_tab[w + 1][k] == 0 &&
+					control_tab[w + 1][k - 1] == 0 &&
+					control_tab[w][k - 1] == 0 &&
+					control_tab[w - 1][k - 1] == 0)
+				{
+					control_tab[w][k] = ship_type;
+					enemy_tab[i].x_back = k;
+					enemy_tab[i].x_front = k;
+					enemy_tab[i].y_front = w;
+					enemy_tab[i].y_back = w;
+					ship_made[ship_type - 1]--;
+					break;
+				}
+			}
+			break;
+		case 2:
+			if (ship_made[ship_type - 1] == 0)
+			{
+				ship_type++;
+				break;
+			}
+			while (true)
+			{
+				int w = rand() % 10;
+				int k = rand() % 10;
+				if (control_tab[w][k] == 0 &&
+					control_tab[w - 1][k] == 0 &&
+					control_tab[w - 1][k + 1] == 0 &&
+					control_tab[w][k + 1] == 0 && //x=k;y=w
+					control_tab[w + 1][k + 1] == 0 &&
+					control_tab[w + 1][k] == 0 &&
+					control_tab[w + 1][k - 1] == 0 &&
+					control_tab[w][k - 1] == 0 &&
+					control_tab[w - 1][k - 1] == 0)
+				{
+
+				}
+			}
+		}
+	}
+}
