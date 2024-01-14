@@ -51,7 +51,7 @@ void displayBoard();
 int welcomeScreen();
 void cords_to_matrix(int x, int y, int** tab, int mode); // mode = 0, lewa plansza, czyli gracz; mode = 1, prawa plansza, czyli, komputer
 void drawShips(Ship* ship_tab,int player_type); // player_type = 0, analogicznie jak wyzej
-void random_CPU_ships(Ship* enemy_tab,int* control_tab);
+void random_CPU_ships(Ship* enemy_tab,int control_tab[10][10]);
 
 
 

@@ -107,7 +107,7 @@ void drawShips(Ship* ship_tab,int player_type)
 {
 
 }
-void random_CPU_ships(Ship* enemy_tab, int** control_tab)
+void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 {
 	int ship_type = 1;
 	int ship_made[4] = { 4,3,2,1 };
@@ -126,15 +126,62 @@ void random_CPU_ships(Ship* enemy_tab, int** control_tab)
 			{
 				int w = rand() % 10;
 				int k = rand() % 10;
-				if (control_tab[w][k] == 0 &&
-					control_tab[w - 1][k] == 0 &&
-					control_tab[w - 1][k + 1] == 0 &&
-					control_tab[w][k + 1] == 0 && //x=k;y=w
-					control_tab[w + 1][k + 1] == 0 &&
+				if(w>0&&k>0)
+				{
+					if (control_tab[w][k] == 0 &&
+						control_tab[w - 1][k] == 0 &&
+						control_tab[w - 1][k + 1] == 0 &&
+						control_tab[w][k + 1] == 0 && //x=k;y=w
+						control_tab[w + 1][k + 1] == 0 &&
+						control_tab[w + 1][k] == 0 &&
+						control_tab[w + 1][k - 1] == 0 &&
+						control_tab[w][k - 1] == 0 &&
+						control_tab[w - 1][k - 1] == 0)
+					{
+						control_tab[w][k] = ship_type;
+						enemy_tab[i].x_back = k;
+						enemy_tab[i].x_front = k;
+						enemy_tab[i].y_front = w;
+						enemy_tab[i].y_back = w;
+						ship_made[ship_type - 1]--;
+						break;
+					}
+				}
+				else if (w == 0 && k == 0 &&
+					control_tab[w][k] == 0 &&
+					control_tab[w][k + 1] == 0 &&
+					control_tab[w + 1][k] == 0 &&
+					control_tab[w + 1][k + 1] == 0)
+				{
+					control_tab[w][k] = ship_type;
+					enemy_tab[i].x_back = k;
+					enemy_tab[i].x_front = k;
+					enemy_tab[i].y_front = w;
+					enemy_tab[i].y_back = w;
+					ship_made[ship_type - 1]--;
+					break;
+				}
+				else if (w == 0 && control_tab[w][k] == 0 &&
+					control_tab[w][k - 1] == 0 &&
+					control_tab[w][k + 1] == 0 &&
 					control_tab[w + 1][k] == 0 &&
 					control_tab[w + 1][k - 1] == 0 &&
-					control_tab[w][k - 1] == 0 &&
-					control_tab[w - 1][k - 1] == 0)
+					control_tab[w + 1][k + 1] == 0)
+				{
+					control_tab[w][k] = ship_type;
+					enemy_tab[i].x_back = k;
+					enemy_tab[i].x_front = k;
+					enemy_tab[i].y_front = w;
+					enemy_tab[i].y_back = w;
+					ship_made[ship_type - 1]--;
+					break;
+				}
+				else if (k == 0 && control_tab[w][k] == 0 &&
+					control_tab[w - 1][k] == 0 &&
+					control_tab[w + 1][k] == 0 &&
+					control_tab[w + 1][k + 1] == 0 &&
+					control_tab[w][k + 1] == 0 &&
+					control_tab[w - 1][k + 1] == 0)
 				{
 					control_tab[w][k] = ship_type;
 					enemy_tab[i].x_back = k;
@@ -147,28 +194,38 @@ void random_CPU_ships(Ship* enemy_tab, int** control_tab)
 			}
 			break;
 		case 2:
-			if (ship_made[ship_type - 1] == 0)
-			{
-				ship_type++;
-				break;
-			}
-			while (true)
-			{
-				int w = rand() % 10;
-				int k = rand() % 10;
-				if (control_tab[w][k] == 0 &&
-					control_tab[w - 1][k] == 0 &&
-					control_tab[w - 1][k + 1] == 0 &&
-					control_tab[w][k + 1] == 0 && //x=k;y=w
-					control_tab[w + 1][k + 1] == 0 &&
-					control_tab[w + 1][k] == 0 &&
-					control_tab[w + 1][k - 1] == 0 &&
-					control_tab[w][k - 1] == 0 &&
-					control_tab[w - 1][k - 1] == 0)
-				{
-
-				}
-			}
+			//if (ship_made[ship_type - 1] == 0)
+			//{
+			//	ship_type++;
+			//	break;
+			//}
+			//while (true)
+			//{
+			//	int w = rand() % 10;
+			//	int k = rand() % 10;
+			//	if (control_tab[w][k] == 0 &&
+			//		control_tab[w - 1][k] == 0 &&
+			//		control_tab[w - 1][k + 1] == 0 &&
+			//		control_tab[w][k + 1] == 0 && //x=k;y=w
+			//		control_tab[w + 1][k + 1] == 0 &&
+			//		control_tab[w + 1][k] == 0 &&
+			//		control_tab[w + 1][k - 1] == 0 &&
+			//		control_tab[w][k - 1] == 0 &&
+			//		control_tab[w - 1][k - 1] == 0&&
+			//		control_tab[w - 1][k - 1] == 0)//losowanie pocz¹tku statku 2 masztowego
+			//	{
+			//		while (true)
+			//		{
+			//			int direction = rand() % 4;//0=N;1=S;2=E;3=W
+			//			switch (direction)
+			//			{
+			//			case 0:
+			//				if(control_tab[w-2][k])
+			//			}
+			//		}
+			//	}
+			//}
+			break;
 		}
 	}
 }
