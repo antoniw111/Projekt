@@ -9,6 +9,7 @@ utworzy³em ten rozdzia³ na dwa pliki aby oddzieliæ funkcje gry od logiki gry
 #ifndef WARSHIPS_H_
 #define WARSHIPS_H_
 //dodane aby zwiêkszyæ czytelnoœæ kodu rysowania palnszy oraz szybkie zmienianie offsetów
+//-----------------------define----------------------
 #define sheight 800
 #define swidth 1000
 #define right_screenOffset 10
@@ -37,22 +38,29 @@ utworzy³em ten rozdzia³ na dwa pliki aby oddzieliæ funkcje gry od logiki gry
 #define right_plane_lenght ((screenOffset_width - right_plane_rightOffset) - ((screenOffset_width / 2.0) + right_plane_leftOffset))
 #define right_plane_height (((2 * screenOffset_height / 3.0) - right_plane_lowerOffset) - (right_plane_upperOffset+upper_screenOffset))
 #define title_upperOffset 200
-//struktury 
+//-----------------include---------------------------
+#include <stdbool.h>
+//---------------------------------------------------
+//---------------------------------------------------
+//-----------------struktury------------------------- 
+
 typedef struct
 {
-	int x_front;
+	int x_front; //liczone od zera do 9, gdzie y rosnie w dó³
 	int x_back;
 	int y_front;
 	int y_back;
+	bool alive;
 }Ship;
-
-//funkcje dla gry
-void displayBoard();
-int welcomeScreen();
+//---------------------------------------------------
+//---------------funkcje dla gry---------------------
+void displayBoard();//wyœwietlanie pustych plansz
+int welcomeScreen();//wyœwietlanie ekranu powitalnego i obs³uga jego przycisków
 void cords_to_matrix(int x, int y, int** tab, int mode); // mode = 0, lewa plansza, czyli gracz; mode = 1, prawa plansza, czyli, komputer
-void drawShips(Ship* ship_tab,int player_type); // player_type = 0, analogicznie jak wyzej
-void random_CPU_ships(Ship* enemy_tab,int control_tab[10][10]);
-
+void drawShips(Ship* ship_tab,int player_type); // player_type = 0, analogicznie jak wyzej; rysuje istniej¹ce statki
+void random_CPU_ships(Ship* enemy_tab,int control_tab[10][10]);//losowanie statków komputera
+int check_surroundings(int w, int k, int control_tab[10][10]);//funkcja do sprawdzania otoczenia podczs losowania pozycji statku
+//---------------------------------------------------
 
 
 
