@@ -22,8 +22,8 @@ int main()
 	case 1:
 		Ship player_ships[10] = { 0 };
 		Ship enemy_ships[10] = { 0 };
-		int control_tab[10][10] = { 0 };
-			/*{1,1,1,1,1,1,0,1,1,1},
+		int control_tab[10][10] = {
+			{1,1,1,1,1,1,0,1,1,1},
 			{0,0,1,1,1,1,1,1,1,1},
 			{0,0,1,1,1,1,1,1,1,1},
 			{0,0,1,1,1,1,1,1,1,1},
@@ -32,17 +32,9 @@ int main()
 			{0,0,1,1,1,1,1,1,1,1},
 			{0,0,1,1,1,1,1,1,1,1},
 			{0,0,1,1,1,1,1,1,1,1},
-			{0,0,1,1,1,1,1,1,1,1}};*/ //DEBUG ONLY
+			{0,0,1,1,1,1,1,1,1,1}};
 		random_CPU_ships(enemy_ships, control_tab);
-		for (int i = 0; i < 10; i++)
-		{
-			for (int j = 0; j < 10; j++)
-			{
-				printf("%d ", control_tab[i][j]);
-			}
-			printf("\n");
-		}
-		//displayBoard();
+		displayBoard();
 		wait();
 		break;
 	}
