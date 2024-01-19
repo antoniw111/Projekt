@@ -1864,7 +1864,7 @@ int PLAY(int player_control_tab[10][10], int enemy_control_tab[10][10], int play
 	}
 	else enemy_control_tab[w][k] = -2;
 	CPU_shoot(&w, &k, player_control_tab,last_CPU_hit, did_CPU_hit);
-	if (player_control_tab[w][k] != 0)
+	if (player_control_tab[w][k] < 0)
 	{
 		player_ships[player_control_tab[w][k] - 1]--;
 		player_control_tab[w][k] = -1;
@@ -1894,7 +1894,7 @@ void drawScore(int player_ships[4], int enemy_ships[4])
 	char ship_4[50] = "Lotniskowiec (4x[]) x ";
 	char ship_3[50] = "Niszczyciel (3x[]) x ";
 	char ship_2[50] = "Lodz patrolowa (2x[]) x ";
-	char ship_1[50] = "Ponton bojowy (2x[]) x ";
+	char ship_1[50] = "Ponton bojowy (1x[]) x ";
 	char buffer[50] = "";
 	sprintf(buffer, "%d", player_ships[3]/4);
 	settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
@@ -1916,7 +1916,7 @@ void drawScore(int player_ships[4], int enemy_ships[4])
 	char ship_4_1[50] = "Lotniskowiec (4x[]) x ";
 	char ship_3_1[50] = "Niszczyciel (3x[]) x ";
 	char ship_2_1[50] = "Lodz patrolowa (2x[]) x ";
-	char ship_1_1[50] = "Ponton bojowy (2x[]) x ";
+	char ship_1_1[50] = "Ponton bojowy (1x[]) x ";
 	char buffer_1[50] = "";
 	sprintf(buffer_1, "%d", enemy_ships[3]/4);
 	settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
