@@ -4,11 +4,12 @@ Nr indeksu: 333516
 Gra w Statki
 
 utworzy³em ten rozdzia³ na dwa pliki aby oddzieliæ funkcje gry od logiki gry*/
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-//#include <windows.h>
 #include <stdbool.h>
+#include <string.h>
 #include "warships.h"
 #include "winbgi2.h"
 void displayBoard()
@@ -20,10 +21,7 @@ void displayBoard()
 	//podzia³ka pola jednego gracza 1:2
 	line(5, 2 * screenOffset_height / 3.0, x_end, 2 * screenOffset_height / 3.0);
 	//plansza gracza i komputera
-		//gracz
-
-
-
+	
 	//gracz
 	line(left_screenOffset+left_plane_leftOffset, upper_screenOffset+left_plane_upperOffset,
 		left_screenOffset + left_plane_leftOffset, (2 * screenOffset_height / 3.0) - left_plane_lowerOffset);
@@ -56,14 +54,12 @@ void displayBoard()
 	}
 
 }
-/// <summary>
-/// Funkcja obslugjaca ekran powitalny
-/// </summary>
-/// <returns> 0 jesli urzytkownik kliknal QUIT</para> 1 jesli kliknal PLAY</returns>
+// Funkcja obslugjaca ekran powitalny
+// 0 jesli urzytkownik kliknal QUIT</para> 1 jesli kliknal PLAY
 int welcomeScreen()
 {
 	int option = 0;
-	const char* welcome_msg = "WARSHIPS v0.1";
+	const char* welcome_msg = "WARSHIPS v1.0";
 	settextjustify(CENTER_TEXT, CENTER_TEXT);
 	settextstyle(DEFAULT_FONT, HORIZ_DIR, 7);
 	outtextxy(1000 / 2., title_upperOffset, welcome_msg);
@@ -95,42 +91,188 @@ int welcomeScreen()
 	}
 	return 0;
 }
-/// <summary>
-/// Funkcja do tlumaczenia wspolrzednych na ekranie, na indeksy tablicy 2d
-/// </summary>
-/// <param name="x"> Wspolrzedna na ekranie </param>
-/// <param name="y"> Wspolrzedna na ekranie </param>
-/// <param name="tab"> Tablica do wpisania </param>
-/// <param name="mode"> Wybor tablicy (1-gracz,2-CPU) </param>
-void cords_to_matrix(int x, int y, int** tab, int mode)
+// Funkcja z instrukcjami jak graæ
+void displayInstrucions()
 {
-	if (mode)
+	clear();
+	bool status = true;
+	settextjustify(CENTER_TEXT, CENTER_TEXT);
+	outtextxy(980/2.,40,"Witaj w grze w statki\n");
+	settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
+	outtextxy(1000 / 2., 70, "Bedziesz rozgrywal rundy na zmiane z przeciwnikiem sterowanym przez komputer");
+	outtextxy(1000 / 2., 100, "Musisz ustawic swoje statki.Zaczniesz od statkow jednomasztowych i");
+	outtextxy(1000 / 2., 130,"potem przejdziemy do wiekszych.");
+	outtextxy(1000 / 2., 160, "PAMIETAJ STATKI NIE MOGA STYKAC SIE ROGAMI ANI BOKAMI\n");
+	outtextxy(1000 / 2., 190,"Wieksze statki stawiaj klikajac w kratke poczatkowa i po kolei w nastêpne NIE ROB SKOSOW");
+	outtextxy(1000 / 2., 210, "Gdy bedziesz gotowy gra rozpocznie twoja runde strzalu.");
+	outtextxy(1000 / 2., 240,"Kliknij na prawej szachownicy tam gdzie chcesz poslac pocisk.");
+	outtextxy(1000 / 2., 270, "Czerwony oznacza trafienie, bialy pudlo");
+	outtextxy(1000 / 2., 300,"Na dole bedzie wypisana liczba statkow przeciwnika oraz twoich");
+	outtextxy(1000 / 2., 330,"Powodzenia");
+	outtextxy(1000 / 2., 360,"Nacisnij sx2 aby zamknac ten ekran, a zeby wyjsc z gry nacisnij q");
+	while (status)
 	{
-
+		if (kbhit() != 0)
+		{
+			if (getch() == 'S') status = false;
+			if (getch() == 'Q') exit(0);
+		}
+	}
+}
+// Funkcja do tlumaczenia wspolrzednych na ekranie, na indeksy tablicy 2d
+// Zwraca watroœæ któr¹ znalaz³a w tablicy jeœli mode !=1 lub 200 jeœli nie znalaz³a,
+// zwraca poprzez wskaŸnik wiersz i kolumne  w tablicy
+//  Gdy mode = 1 nie zwraca elementu tablicy tolko 0
+int cords_to_matrix(int x, int y,int* w,int* k, int tab[10][10], int mode)
+{
+	if (mode == 1)
+	{
+		double x_origin = left_screenOffset + left_plane_leftOffset;
+		double y_origin = upper_screenOffset + left_plane_leftOffset;
+		bool y_found = false;
+		bool x_found = false;
+		for (int i = 0; i < 10; i++)
+		{
+			if (x > x_origin + ((i / 10.) * left_plane_lenght) && x<x_origin + (i / 10.) * left_plane_lenght + left_plane_lenght / 10.)
+			{
+				*k = i;
+				x_found = true;
+			}
+			if (y>y_origin + ((i / 10.) * left_plane_height) && y<y_origin + (i / 10.) * left_plane_height + left_plane_height/10.)
+			{
+				*w = i;
+				y_found = true;
+			}
+			if (x_found && y_found) break;
+		}
+		if (x_found && y_found)
+		{
+			return 0;
+		}
+		else return 200;
 	}
 	else
 	{
-
+		double x_origin = (screenOffset_width / 2.0) + right_plane_leftOffset;
+		double y_origin = right_plane_upperOffset + upper_screenOffset;
+		bool y_found = false;
+		bool x_found = false;
+		for (int i = 0; i < 10; i++)
+		{
+			if (x > x_origin + ((i / 10.) * right_plane_lenght) && x < x_origin + (i / 10.) * right_plane_lenght + right_plane_lenght / 10.)
+			{
+				*k = i;
+				x_found = true;
+			}
+			if (y > y_origin + ((i / 10.) * right_plane_height) && y < y_origin + (i / 10.) * right_plane_height + right_plane_height / 10.)
+			{
+				*w = i;
+				y_found = true;
+			}
+			if (x_found && y_found) break;
+		}
+		if (x_found && y_found) return tab[*w][*k];
+		else return 200;
+		
 	}
 }
-void drawShips(Ship* ship_tab,int player_type)
+void matrix_to_cords(double* x, double* y, int m_w, int m_k, int mode)
 {
-
+	if (mode == 1)
+	{
+		*y = upper_screenOffset + left_plane_upperOffset + (left_plane_height / 10.) * m_w + 1;
+		*x = left_screenOffset + left_plane_leftOffset + (left_plane_lenght / 10.) * m_k + 1;
+	}
+	else
+	{
+		*y = right_plane_upperOffset + upper_screenOffset + (right_plane_height / 10.) * m_w + 1;
+		*x = (screenOffset_width / 2.0) + right_plane_leftOffset + (right_plane_height / 10.) * m_k + 1;
+	}
 }
-/// <summary>
-/// Funkcja generowania statkow przeciwnika
-/// </summary>
-/// <param name="enemy_tab">Tablica struktor Ship przeciwnika</param>
-/// <param name="control_tab">Tablica pozycji przeciwnika</param>
-void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
+void drawShips(int control_tab[10][10],int enemy_control_tab[10][10], int mode)
 {
-	int ship_type = 1;
+	double x = 0;
+	double y = 0;
+	if (mode == 1)
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			for (int j = 0; j < 10; j++)
+			{
+				setfillstyle(INTERLEAVE_FILL, GREEN);
+				if (control_tab[i][j] > 0)
+				{
+					matrix_to_cords(&x, &y, i, j, 1);
+					floodfill(x, y, WHITE);
+				}
+				if (control_tab[i][j] == -1)
+				{
+					setfillstyle(INTERLEAVE_FILL, RED);
+					matrix_to_cords(&x, &y, i, j, 1);
+					floodfill(x, y, WHITE);
+				}
+				if (control_tab[i][j] == -2)
+				{
+					setfillstyle(BKSLASH_FILL, WHITE);
+					matrix_to_cords(&x, &y, i, j, 1);
+					floodfill(x, y, WHITE);
+				}
+
+			}
+		}
+		for (int i = 0; i < 10; i++)
+		{
+			for (int j = 0; j < 10; j++)
+			{
+				if (enemy_control_tab[i][j] == -1)
+				{
+					setfillstyle(INTERLEAVE_FILL, RED);
+					matrix_to_cords(&x, &y, i, j, 2);
+					floodfill(x, y, WHITE);
+				}
+				if (enemy_control_tab[i][j] == -2)
+				{
+					setfillstyle(BKSLASH_FILL, WHITE);
+					matrix_to_cords(&x, &y, i, j, 2);
+					floodfill(x, y, WHITE);
+				}
+
+			}
+		}
+	}
+	else
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			for (int j = 0; j < 10; j++)
+			{
+				if (control_tab[i][j] <0)
+				{
+					setfillstyle(INTERLEAVE_FILL, RED);
+					matrix_to_cords(&x, &y, i, j, 2);
+					floodfill(x, y, WHITE);
+				}
+			}
+		}
+	}
+		
+}
+// Funkcja generowania statkow przeciwnika
+//control_tab toTablica pozycji przeciwnika w tym przypadku
+void random_CPU_ships(int control_tab[10][10])
+{
+	int ship_type = 4;
 	int ship_made[4] = { 4,3,2,1 };
 	bool place_success = false, heading_success = false;
 	int heading = 0; // 1 = góra; 2 = prawo; 3 = dó³ 4 = lewo
 	srand(time(NULL));
 	for (int i = 0; i < 10; i++)
 	{
+		if (ship_made[ship_type - 1] <= 0)
+		{
+			ship_type--;
+			//break;
+		}
 		switch (ship_type)
 		{
 		case 1:
@@ -143,11 +285,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 				{
 				default:
 					control_tab[w][k] = ship_type;
-					enemy_tab[i].x_back = k;
-					enemy_tab[i].x_front = k;
-					enemy_tab[i].y_front = w;
-					enemy_tab[i].y_back = w;
-					enemy_tab[i].alive = true;
 					ship_made[ship_type - 1]--;
 					place_success = true;
 					break;
@@ -186,11 +323,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 1;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -201,11 +333,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k + 1] = ship_type;
-								enemy_tab[i].x_back = k + 1;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -216,11 +343,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 1;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -231,11 +353,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k - 1] = ship_type;
-								enemy_tab[i].x_back = k - 1;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -256,11 +373,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k + 1] = ship_type;
-								enemy_tab[i].x_back = k + 1;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -271,11 +383,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 1;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -296,11 +403,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k + 1] = ship_type;
-								enemy_tab[i].x_back = k + 1;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -311,11 +413,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 1;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -326,11 +423,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k - 1] = ship_type;
-								enemy_tab[i].x_back = k - 1;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -351,11 +443,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 1;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -366,11 +453,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k + 1] = ship_type;
-								enemy_tab[i].x_back = k + 1;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -381,11 +463,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 1;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -406,11 +483,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 1;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -421,11 +493,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k - 1] = ship_type;
-								enemy_tab[i].x_back = k - 1;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -449,11 +516,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 1;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -464,11 +526,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k + 1] = ship_type;
-								enemy_tab[i].x_back = k + 1;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -479,11 +536,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k - 1] = ship_type;
-								enemy_tab[i].x_back = k - 1;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -507,11 +559,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 1;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -522,11 +569,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 1;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -537,11 +579,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k - 1] = ship_type;
-								enemy_tab[i].x_back = k - 1;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -562,11 +599,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 1;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -577,11 +609,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k + 1] = ship_type;
-								enemy_tab[i].x_back = k + 1;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -602,11 +629,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 1;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -617,11 +639,6 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k - 1] = ship_type;
-								enemy_tab[i].x_back = k - 1;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
@@ -663,64 +680,44 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
 								control_tab[w - 2][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 2;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true; break;
 						case 2:
 							if (check_surroundings(w, k + 1, control_tab) != -1 && k<8 && check_surroundings(w, k + 2, control_tab) != -1) //prawo dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k + 1] = ship_type;
 								control_tab[w][k + 2] = ship_type;
-								enemy_tab[i].x_back = k + 2;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 3:
 							if (check_surroundings(w + 1, k, control_tab) != -1 && w<8 && check_surroundings(w + 2, k, control_tab) != -1) //dó³ dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
 								control_tab[w + 2][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 2;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 4:
 							if (check_surroundings(w, k - 1, control_tab) != -1 && k>1 && check_surroundings(w, k - 2, control_tab) != -1) // lewo dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k - 1] = ship_type;
 								control_tab[w][k - 2] = ship_type;
-								enemy_tab[i].x_back = k - 2;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -737,32 +734,22 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k] = ship_type;
 								control_tab[w][k + 1] = ship_type;
 								control_tab[w][k + 2] = ship_type;
-								enemy_tab[i].x_back = k + 2;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 3:
 							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 8 && check_surroundings(w + 2, k, control_tab) != -1) //dó³ dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
 								control_tab[w + 2][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 2;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -779,48 +766,33 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k] = ship_type;
 								control_tab[w][k + 1] = ship_type;
 								control_tab[w][k + 2] = ship_type;
-								enemy_tab[i].x_back = k + 2;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 3:
 							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 8 && check_surroundings(w + 2, k, control_tab) != -1) //dó³ dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
 								control_tab[w + 2][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 2;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 4:
 							if (check_surroundings(w, k - 1, control_tab) != -1 && k > 1 && check_surroundings(w, k - 2, control_tab) != -1) // lewo dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k - 1] = ship_type;
 								control_tab[w][k - 2] = ship_type;
-								enemy_tab[i].x_back = k - 2;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -837,48 +809,33 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
 								control_tab[w - 2][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 2;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 2:
 							if (check_surroundings(w, k + 1, control_tab) != -1 && k < 8 && check_surroundings(w, k + 2, control_tab) != -1) //prawo dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k + 1] = ship_type;
 								control_tab[w][k + 2] = ship_type;
-								enemy_tab[i].x_back = k + 2;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 3:
 							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 8 && check_surroundings(w + 2, k, control_tab) != -1) //dó³ dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
 								control_tab[w + 2][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 2;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -895,32 +852,22 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
 								control_tab[w - 2][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 2;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 4:
 							if (check_surroundings(w, k - 1, control_tab) != -1 && k > 1 && check_surroundings(w, k - 2, control_tab) != -1) // lewo dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k - 1] = ship_type;
 								control_tab[w][k - 2] = ship_type;
-								enemy_tab[i].x_back = k - 2;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -940,48 +887,33 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
 								control_tab[w - 2][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 2;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 2:
 							if (check_surroundings(w, k + 1, control_tab) != -1 && k < 8 && check_surroundings(w, k + 2, control_tab) != -1) //prawo dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k + 1] = ship_type;
 								control_tab[w][k + 2] = ship_type;
-								enemy_tab[i].x_back = k + 2;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 4:
 							if (check_surroundings(w, k - 1, control_tab) != -1 && k > 1 && check_surroundings(w, k - 2, control_tab) != -1) // lewo dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k - 1] = ship_type;
 								control_tab[w][k - 2] = ship_type;
-								enemy_tab[i].x_back = k - 2;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -1001,48 +933,33 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
 								control_tab[w - 2][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 2;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 3:
 							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 8 && check_surroundings(w + 2, k, control_tab) != -1) //dó³ dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
 								control_tab[w + 2][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 2;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 4:
 							if (check_surroundings(w, k - 1, control_tab) != -1 && k > 1 && check_surroundings(w, k - 2, control_tab) != -1) // lewo dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k - 1] = ship_type;
 								control_tab[w][k - 2] = ship_type;
-								enemy_tab[i].x_back = k - 2;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -1059,32 +976,22 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
 								control_tab[w - 2][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 2;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 2:
 							if (check_surroundings(w, k + 1, control_tab) != -1 && k < 8 && check_surroundings(w, k + 2, control_tab) != -1) //prawo dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k + 1] = ship_type;
 								control_tab[w][k + 2] = ship_type;
-								enemy_tab[i].x_back = k + 2;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -1101,32 +1008,22 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
 								control_tab[w + 2][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 2;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 4:
 							if (check_surroundings(w, k - 1, control_tab) != -1 && k > 1 && check_surroundings(w, k - 2, control_tab) != -1) // lewo dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w][k - 1] = ship_type;
 								control_tab[w][k - 2] = ship_type;
-								enemy_tab[i].x_back = k - 2;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -1142,7 +1039,7 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 				int k = rand() % 10;
 
 				/*int w = 0;
-				int k = 9*/; //DEBUG ONLY
+				int k = 9;*/ //DEBUG ONLY
 				switch (check_surroundings(w, k, control_tab))
 				{
 				case -2:
@@ -1164,16 +1061,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w - 1][k] = ship_type;
 								control_tab[w - 2][k] = ship_type;
 								control_tab[w - 3][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 3;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 2:
 							if (check_surroundings(w, k + 1, control_tab) != -1 && k < 7 && check_surroundings(w, k + 2, control_tab) != -1 && check_surroundings(w, k + 3, control_tab) != -1) //prawo dla 4
 							{
@@ -1181,16 +1073,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k + 1] = ship_type;
 								control_tab[w][k + 2] = ship_type;
 								control_tab[w][k + 3] = ship_type;
-								enemy_tab[i].x_back = k + 3;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 3:
 							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //dó³ dla 4
 							{
@@ -1198,16 +1085,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w + 1][k] = ship_type;
 								control_tab[w + 2][k] = ship_type;
 								control_tab[w + 3][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 3;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 4:
 							if (check_surroundings(w, k - 1, control_tab) != -1 && k > 2 && check_surroundings(w, k - 2, control_tab) != -1 && check_surroundings(w, k - 3, control_tab) != -1) // lewo dla 3
 							{
@@ -1215,16 +1097,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k - 1] = ship_type;
 								control_tab[w][k - 2] = ship_type;
 								control_tab[w][k - 3] = ship_type;
-								enemy_tab[i].x_back = k - 3;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -1242,16 +1119,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k + 1] = ship_type;
 								control_tab[w][k + 2] = ship_type;
 								control_tab[w][k + 3] = ship_type;
-								enemy_tab[i].x_back = k + 3;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 3:
 							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //dó³ dla 4
 							{
@@ -1259,16 +1131,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w + 1][k] = ship_type;
 								control_tab[w + 2][k] = ship_type;
 								control_tab[w + 3][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 3;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -1286,16 +1153,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k + 1] = ship_type;
 								control_tab[w][k + 2] = ship_type;
 								control_tab[w][k + 3] = ship_type;
-								enemy_tab[i].x_back = k + 3;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 3:
 							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //dó³ dla 4
 							{
@@ -1303,16 +1165,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w + 1][k] = ship_type;
 								control_tab[w + 2][k] = ship_type;
 								control_tab[w + 3][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 3;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 4:
 							if (check_surroundings(w, k - 1, control_tab) != -1 && k > 2 && check_surroundings(w, k - 2, control_tab) != -1 && check_surroundings(w, k - 3, control_tab) != -1) // lewo dla 4
 							{
@@ -1320,16 +1177,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k - 1] = ship_type;
 								control_tab[w][k - 2] = ship_type;
 								control_tab[w][k - 3] = ship_type;
-								enemy_tab[i].x_back = k - 3;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -1347,16 +1199,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w - 1][k] = ship_type;
 								control_tab[w - 2][k] = ship_type;
 								control_tab[w - 3][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 3;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 2:
 							if (check_surroundings(w, k + 1, control_tab) != -1 && k < 7 && check_surroundings(w, k + 2, control_tab) != -1 && check_surroundings(w, k + 3, control_tab) != -1) //prawo dla 4
 							{
@@ -1364,16 +1211,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k + 1] = ship_type;
 								control_tab[w][k + 2] = ship_type;
 								control_tab[w][k + 3] = ship_type;
-								enemy_tab[i].x_back = k + 3;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 3:
 							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //dó³ dla 4
 							{
@@ -1381,16 +1223,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w + 1][k] = ship_type;
 								control_tab[w + 2][k] = ship_type;
 								control_tab[w + 3][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 3;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -1408,16 +1245,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w - 1][k] = ship_type;
 								control_tab[w - 2][k] = ship_type;
 								control_tab[w - 3][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 3;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 4:
 							if (check_surroundings(w, k - 1, control_tab) != -1 && k > 2 && check_surroundings(w, k - 2, control_tab) != -1 && check_surroundings(w, k - 3, control_tab) != -1) // lewo dla 4
 							{
@@ -1425,16 +1257,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k - 1] = ship_type;
 								control_tab[w][k - 2] = ship_type;
 								control_tab[w][k - 3] = ship_type;
-								enemy_tab[i].x_back = k - 3;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -1455,16 +1282,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w - 1][k] = ship_type;
 								control_tab[w - 2][k] = ship_type;
 								control_tab[w - 3][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 3;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 2:
 							if (check_surroundings(w, k + 1, control_tab) != -1 && k < 7 && check_surroundings(w, k + 2, control_tab) != -1 && check_surroundings(w, k + 3, control_tab) != -1) //prawo dla 4
 							{
@@ -1472,16 +1294,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k + 1] = ship_type;
 								control_tab[w][k + 2] = ship_type;
 								control_tab[w][k + 3] = ship_type;
-								enemy_tab[i].x_back = k + 3;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 4:
 							if (check_surroundings(w, k - 1, control_tab) != -1 && k > 2 && check_surroundings(w, k - 2, control_tab) != -1 && check_surroundings(w, k - 3, control_tab) != -1) // lewo dla 4
 							{
@@ -1489,16 +1306,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k - 1] = ship_type;
 								control_tab[w][k - 2] = ship_type;
 								control_tab[w][k - 3] = ship_type;
-								enemy_tab[i].x_back = k - 3;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -1519,16 +1331,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w - 1][k] = ship_type;
 								control_tab[w - 2][k] = ship_type;
 								control_tab[w - 3][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 3;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 3:
 							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //dó³ dla 4
 							{
@@ -1536,16 +1343,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w + 1][k] = ship_type;
 								control_tab[w + 2][k] = ship_type;
 								control_tab[w + 3][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 3;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 4:
 							if (check_surroundings(w, k - 1, control_tab) != -1 && k > 2 && check_surroundings(w, k - 2, control_tab) != -1 && check_surroundings(w, k - 3, control_tab) != -1) // lewo dla 4
 							{
@@ -1553,16 +1355,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k - 1] = ship_type;
 								control_tab[w][k - 2] = ship_type;
 								control_tab[w][k - 3] = ship_type;
-								enemy_tab[i].x_back = k - 3;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -1580,16 +1377,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w - 1][k] = ship_type;
 								control_tab[w - 2][k] = ship_type;
 								control_tab[w - 3][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w - 3;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 2:
 							if (check_surroundings(w, k + 1, control_tab) != -1 && k < 7 && check_surroundings(w, k + 2, control_tab) != -1 && check_surroundings(w, k + 3, control_tab) != -1) //prawo dla 4
 							{
@@ -1597,16 +1389,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k + 1] = ship_type;
 								control_tab[w][k + 2] = ship_type;
 								control_tab[w][k + 3] = ship_type;
-								enemy_tab[i].x_back = k + 3;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -1624,16 +1411,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w + 1][k] = ship_type;
 								control_tab[w + 2][k] = ship_type;
 								control_tab[w + 3][k] = ship_type;
-								enemy_tab[i].x_back = k;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w + 3;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						case 4:
 							if (check_surroundings(w, k - 1, control_tab) != -1 && k > 2 && check_surroundings(w, k - 2, control_tab) != -1 && check_surroundings(w, k - 3, control_tab) != -1) // lewo dla 4
 							{
@@ -1641,16 +1423,11 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 								control_tab[w][k - 1] = ship_type;
 								control_tab[w][k - 2] = ship_type;
 								control_tab[w][k - 3] = ship_type;
-								enemy_tab[i].x_back = k - 3;
-								enemy_tab[i].x_front = k;
-								enemy_tab[i].y_front = w;
-								enemy_tab[i].y_back = w;
-								enemy_tab[i].alive = true;
 								ship_made[ship_type - 1]--;
 								place_success = true;
 								heading_success = true;
 							}
-							break;
+							else heading_success = true;break;
 						}
 					}
 					break;
@@ -1659,31 +1436,247 @@ void random_CPU_ships(Ship* enemy_tab, int control_tab[10][10])
 			}
 			break;
 		}
-		if (ship_made[ship_type - 1] == 0)
+		
+	}
+}
+void place_PLAYER_ships(int player_control_tab[10][10], int enemy_control_tab[10][10])
+{
+	int ships_to_place[4] = { 4,3,2,1 };
+	bool all_ship_place = true;
+	bool ship_0 = true;
+	bool ship_1 = true;
+	bool ship_2 = true;
+	int ship_type = 1;
+	double x = 0;
+	double y = 0;
+	int w = 0;
+	int k = 0;
+	int w_1 = 0;
+	int k_1 = 0;
+	int w_2 = 0;
+	int k_2 = 0;
+	int w_3 = 0;
+	int k_3 = 0;
+	while (all_ship_place)
+	{
+		ship_0 = true;
+		ship_1 = true;
+		if (mousedown())
 		{
-			ship_type++;
-			//break;
+			x = mouseclickx();
+			y = mouseclicky();
+			cords_to_matrix(x, y, &w, &k, player_control_tab, 1);
+			if (check_surroundings(w, k, player_control_tab) != -1)
+			{
+				setfillstyle(INTERLEAVE_FILL, GREEN);
+				floodfill(x, y, WHITE);
+				switch (ship_type)
+				{
+				case 1:
+					ships_to_place[ship_type - 1]--;
+					player_control_tab[w][k] = ship_type;
+					drawShips(player_control_tab, enemy_control_tab, 1);
+					if (ships_to_place[ship_type - 1] == 0)
+					{
+						ship_type++;
+					}
+					break;
+				case 2:
+					while (ship_0)
+					{
+						if (mousedown())
+						{
+							x = mouseclickx();
+							y = mouseclicky();
+							cords_to_matrix(x, y, &w_1, &k_1, player_control_tab, 1);
+							if (check_surroundings(w_1, k_1, player_control_tab) != -1 && ((w == w_1 + 1 && k == k_1) || (w == w_1 - 1 && k == k_1) || (w == w_1 && k == k_1+1) || (w == w_1 && k == k_1-1)))
+							{
+								ships_to_place[ship_type - 1]--;
+								player_control_tab[w][k] = ship_type;
+								player_control_tab[w_1][k_1] = ship_type;
+								drawShips(player_control_tab, enemy_control_tab,1);
+								ship_0 = false;
+								if (ships_to_place[ship_type - 1] == 0)
+								{
+									ship_type++;
+								}
+							}
+							else
+							{
+								setfillstyle(SOLID_FILL, BLACK);
+								matrix_to_cords(&x, &y, w, k, 1);
+								floodfill(x, y, WHITE);
+								ship_0 = false;
+							}
+						}
+					}
+					break;
+				case 3:
+					while (ship_0)
+					{
+						if (mousedown())
+						{
+							x = mouseclickx();
+							y = mouseclicky();
+							cords_to_matrix(x, y, &w_1, &k_1, player_control_tab, 1);
+							if (check_surroundings(w_1, k_1, player_control_tab) != -1 && ((w == w_1 + 1 && k == k_1) || (w == w_1 - 1 && k == k_1) || (w == w_1 && k == k_1 + 1) || (w == w_1 && k == k_1 - 1)))
+							{
+								setfillstyle(INTERLEAVE_FILL, GREEN);
+								floodfill(x, y, WHITE);
+								while (ship_1)
+								{
+									if (mousedown())
+									{
+										x = mouseclickx();
+										y = mouseclicky();
+										cords_to_matrix(x, y, &w_2, &k_2, player_control_tab, 1);
+										if (check_surroundings(w_2, k_2, player_control_tab) != -1 && ((w_1 == w_2 + 1 && k_1 == k_2) || (w_1 == w_2 - 1 && k_1 == k_2) || (w_1 == w_2 && k_1 == k_2 + 1) || (w_1 == w_2 && k_1 == k_2 - 1)))
+										{
+											ships_to_place[ship_type - 1]--;
+											player_control_tab[w][k] = ship_type;
+											player_control_tab[w_1][k_1] = ship_type;
+											player_control_tab[w_2][k_2] = ship_type;
+											ship_0 = false;
+											ship_1 = false;
+											drawShips(player_control_tab, enemy_control_tab,1);
+											if (ships_to_place[ship_type - 1] == 0)
+											{
+												ship_type++;
+											}
+										}
+										else
+										{
+											setfillstyle(SOLID_FILL, BLACK);
+											matrix_to_cords(&x, &y, w_1, k_1, 1);
+											floodfill(x, y, WHITE);
+											matrix_to_cords(&x, &y, w, k, 1);
+											floodfill(x, y, WHITE);
+											ship_1 = false;
+											ship_0 = false;
+										}
+									}
+								}
+							}
+							else
+							{
+								setfillstyle(SOLID_FILL, BLACK);
+								matrix_to_cords(&x, &y, w, k, 1);
+								floodfill(x, y, WHITE);
+								ship_0 = false;
+
+							}
+						}
+					}
+					break;
+				case 4:
+					while (ship_0)
+					{
+						if (mousedown())
+						{
+							x = mouseclickx();
+							y = mouseclicky();
+							cords_to_matrix(x, y, &w_1, &k_1, player_control_tab, 1);
+							if (check_surroundings(w_1, k_1, player_control_tab) != -1 && ((w == w_1 + 1 && k == k_1) || (w == w_1 - 1 && k == k_1) || (w == w_1 && k == k_1 + 1) || (w == w_1 && k == k_1 - 1)))
+							{
+								setfillstyle(INTERLEAVE_FILL, GREEN);
+								floodfill(x, y, WHITE);
+								while (ship_1)
+								{
+									if (mousedown())
+									{
+										x = mouseclickx();
+										y = mouseclicky();
+										cords_to_matrix(x, y, &w_2, &k_2, player_control_tab, 1);
+										if (check_surroundings(w_2, k_2, player_control_tab) != -1 && ((w_1 == w_2 + 1 && k_1 == k_2) || (w_1 == w_2 - 1 && k_1 == k_2) || (w_1 == w_2 && k_1 == k_2 + 1) || (w_1 == w_2 && k_1 == k_2 - 1)))
+										{
+											setfillstyle(INTERLEAVE_FILL, GREEN);
+											floodfill(x, y, WHITE);
+											while(ship_2)
+											{
+												if(mousedown())
+												{
+													x = mouseclickx();
+													y = mouseclicky();
+													cords_to_matrix(x, y, &w_3, &k_3, player_control_tab, 1);
+													if (check_surroundings(w_3, k_3, player_control_tab) != -1 && ((w_2 == w_3 + 1 && k_2 == k_3) || (w_2 == w_3 - 1 && k_2 == k_3) || (w_2 == w_3 && k_2 == k_3 + 1) || (w_2 == w_3 && k_2 == k_3 - 1)))
+													{
+														setfillstyle(INTERLEAVE_FILL, GREEN);
+														floodfill(x, y, WHITE);
+														ships_to_place[ship_type - 1]--;
+														player_control_tab[w][k] = ship_type;
+														player_control_tab[w_1][k_1] = ship_type;
+														player_control_tab[w_2][k_2] = ship_type;
+														player_control_tab[w_3][k_3] = ship_type;
+														ship_0 = false;
+														ship_1 = false;
+														ship_2 = false;
+														all_ship_place = false;
+														drawShips(player_control_tab, enemy_control_tab,1);
+														if (ships_to_place[ship_type - 1] == 0)
+														{
+															ship_type++;
+														}
+													}
+													else
+													{
+														setfillstyle(SOLID_FILL, BLACK);
+														matrix_to_cords(&x, &y, w_2, k_2, 1);
+														floodfill(x, y, WHITE);
+														matrix_to_cords(&x, &y, w_1, k_1, 1);
+														floodfill(x, y, WHITE);
+														matrix_to_cords(&x, &y, w, k, 1);
+														floodfill(x, y, WHITE);
+														ship_2 = false;
+														ship_1 = false;
+														ship_0 = false;
+													}
+												}
+											}
+										}
+										else
+										{
+											setfillstyle(SOLID_FILL, BLACK);
+											matrix_to_cords(&x, &y, w_1, k_1, 1);
+											floodfill(x, y, WHITE);
+											matrix_to_cords(&x, &y, w, k, 1);
+											floodfill(x, y, WHITE);
+											ship_1 = false;
+											ship_0 = false;
+										}
+									}
+								}
+							}
+							else
+							{
+								setfillstyle(SOLID_FILL, BLACK);
+								matrix_to_cords(&x, &y, w, k, 1);
+								floodfill(x, y, WHITE);
+								ship_0 = false;
+							}
+						}
+					}
+					break;
+				}
+			}
 		}
 	}
 }
-/// <summary>
-/// Funkcja sprawdzajaca otoczenie punktu w tablicy control_tab
-/// Nie wyjdzie poza granice
-/// <para>Zwraca:</para>
-/// -1 nie znaleziono wszytkich mozliwych pustych kratek w punkcie (w,k)<para></para>
-/// 0 jesli 9 kratek ze srodkowa w punkcie (w,k) jest puste<para></para>
-/// 1 jesli 4 kratki w lewym gornym rogu planszy sa puste<para></para>
-/// 2 jesli 6 kratek jest wolne w pierwszym wierszu ale kolumnie innej niz 0 i 9<para></para>
-/// 3 jesli 6 kratek jest wolne w pierwszej kolumnie ale w wierszu innym niz 0 i 9<para></para>
-/// 4 jesli 4 kratki w prawym dolnym rogu sa puste<para></para>
-/// 5 jesli 6 kratek jest wolne w ostatnim wierszu ale kolumnie innej niz 0 i 9<para></para>
-/// 6 jesli 6 kratek jest wolne w ostatniej kolumnie ale wierszu innym niz 0 i 9<para></para>
-/// 7 jesli 4 kratki w lewym dolnym sa puste<para></para>
-/// 8 jesli 4 kratki w prawym gornym rogu sa puste<para></para>
-/// </summary>
-/// <param name="w"> = Numer wiersza do sprawdzenia</param>
-/// <param name="k"> = Numer kolumny do sprawdzenia</param>
-/// <param name="control_tab"> = Tablica pozycji</param>
+// Funkcja sprawdzajaca otoczenie punktu w tablicy control_tab
+// Nie wyjdzie poza granice
+// Zwraca:
+// -1 nie znaleziono wszytkich mozliwych pustych kratek w punkcie (w,k)
+// 0 jesli 9 kratek ze srodkowa w punkcie (w,k) jest puste
+// 1 jesli 4 kratki w lewym gornym rogu planszy sa puste
+// 2 jesli 6 kratek jest wolne w pierwszym wierszu ale kolumnie innej niz 0 i 9
+// 3 jesli 6 kratek jest wolne w pierwszej kolumnie ale w wierszu innym niz 0 i 9
+// 4 jesli 4 kratki w prawym dolnym rogu sa puste
+// 5 jesli 6 kratek jest wolne w ostatnim wierszu ale kolumnie innej niz 0 i 9
+// 6 jesli 6 kratek jest wolne w ostatniej kolumnie ale wierszu innym niz 0 i 9
+// 7 jesli 4 kratki w lewym dolnym sa puste
+// 8 jesli 4 kratki w prawym gornym rogu sa puste
+// w = Numer wiersza do sprawdzenia
+// k = Numer kolumny do sprawdzenia
+// control_tab = Tablica pozycji
 int check_surroundings(int w, int k, int control_tab[10][10])
 {
 	if (w > 0 && k > 0 && w<9 && k<9)
@@ -1779,4 +1772,166 @@ int check_surroundings(int w, int k, int control_tab[10][10])
 		return -2;
 	}
 	return -1;
+}
+
+void CPU_shoot(int* w, int* k, int control_tab[10][10], int last_CPU_hit[2],bool* did_CPU_hit)
+{
+	bool heading_found = true;
+	srand(time(NULL));
+	if (*did_CPU_hit)
+	{
+		while(heading_found)
+		{
+			int heading = rand() % 4 + 1; // kalsycznie 1-góra; 2-prawo; 3-dó³; 4-lewo
+			switch (heading)
+			{
+			case 1:
+				*k = last_CPU_hit[0];
+				*w = last_CPU_hit[1] - 1;
+				if (*w >= 0) heading_found = false;
+				break;
+			case 2:
+				*k = last_CPU_hit[0] + 1;
+				*w = last_CPU_hit[1];
+				if (*k <= 9) heading_found = false;
+				break;
+			case 3:
+				*k = last_CPU_hit[0];
+				*w = last_CPU_hit[1] + 1;
+				if (*w <= 9) heading_found = false;
+				break;
+			case 4:
+				*k = last_CPU_hit[0] - 1;
+				*w = last_CPU_hit[1];
+				if (*k >= 0) heading_found = false;
+				break;
+			}
+		}
+	}
+	else
+	{
+		while(heading_found)
+		{
+			*w = rand() % 10;
+			*k = rand() % 10;
+			if (control_tab[*w][*k] >= 0) heading_found = false;
+		}
+	}
+}
+
+int PLAYER_shoot(int* w, int* k,int control_tab[10][10])
+{
+	bool shoot = true;
+	while (shoot)
+	{
+		if (kbhit() != 0)
+		{
+			if (getch() == 'S') exit(0);
+		}
+		if (mousedown())
+		{
+			if (cords_to_matrix(mouseclickx(), mouseclicky(), w, k, control_tab, 0) > 0)
+			{
+				printf("HIT!!!\n");
+				setfillstyle(INTERLEAVE_FILL, RED);
+				floodfill(mouseclickx(), mouseclicky(), WHITE);
+				return 0;
+			}
+			else
+			{
+				printf("MISS :(\n");
+				setfillstyle(BKSLASH_FILL, WHITE);
+				floodfill(mouseclickx(), mouseclicky(), WHITE);
+				return -1;
+			}
+		}
+	}
+}
+
+int PLAY(int player_control_tab[10][10], int enemy_control_tab[10][10], int player_ships[4], int enemy_ships[4], int last_CPU_hit[2], bool* did_CPU_hit)
+{
+	bool win = false;
+	int w = 0;
+	int k = 0;
+	double x = 0;
+	double y = 0;
+	int player_win_cond = 4;
+	int CPU_win_cond = 4;
+	if (PLAYER_shoot(&w, &k, enemy_control_tab) == 0)
+	{
+		enemy_ships[enemy_control_tab[w][k]-1]--;
+		enemy_control_tab[w][k] = -1;
+	}
+	else enemy_control_tab[w][k] = -2;
+	CPU_shoot(&w, &k, player_control_tab,last_CPU_hit, did_CPU_hit);
+	if (player_control_tab[w][k] != 0)
+	{
+		player_ships[player_control_tab[w][k] - 1]--;
+		player_control_tab[w][k] = -1;
+		*did_CPU_hit = true;
+		last_CPU_hit[0] = k;
+		last_CPU_hit[1] = w;
+		matrix_to_cords(&x, &y, w, k, 1);
+		setfillstyle(INTERLEAVE_FILL, RED);
+		floodfill(x, y, WHITE);
+
+	}
+	else
+	{
+		player_control_tab[w][k] = -2;
+		*did_CPU_hit = false;
+		matrix_to_cords(&x, &y, w, k, 1);
+		setfillstyle(BKSLASH_FILL, WHITE);
+		floodfill(x,y, WHITE);
+	}
+	if (player_ships[0] == 0 && player_ships[1] ==0 && player_ships[2] ==0 && player_ships[3] == 0) return 0;
+	if (enemy_ships[0] == 0 && enemy_ships[1] ==0 && enemy_ships[2] == 0 && enemy_ships[3] == 0) return 1;
+	return -1;
+}
+
+void drawScore(int player_ships[4], int enemy_ships[4])
+{
+	char ship_4[50] = "Lotniskowiec (4x[]) x ";
+	char ship_3[50] = "Niszczyciel (3x[]) x ";
+	char ship_2[50] = "Lodz patrolowa (2x[]) x ";
+	char ship_1[50] = "Ponton bojowy (2x[]) x ";
+	char buffer[50] = "";
+	sprintf(buffer, "%d", player_ships[3]/4);
+	settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
+	settextjustify(LEFT_TEXT, CENTER_TEXT);
+	outtextxy(15, 2 * screenOffset_height / 3.0 + 15, strncat(ship_4, buffer, 20));
+
+	sprintf(buffer, "%s", "");
+	sprintf(buffer, "%d", player_ships[2]/3);
+	outtextxy(15, 2 * screenOffset_height / 3.0 + 30, strncat(ship_3, buffer, 20));
+
+	sprintf(buffer, "%s", "");
+	sprintf(buffer, "%d", player_ships[1]/2);
+	outtextxy(15, 2 * screenOffset_height / 3.0 + 45, strncat(ship_2, buffer, 20));
+
+	sprintf(buffer, "%s", "");
+	sprintf(buffer, "%d", player_ships[0]);
+	outtextxy(15, 2 * screenOffset_height / 3.0 + 60, strncat(ship_1, buffer, 20));
+
+	char ship_4_1[50] = "Lotniskowiec (4x[]) x ";
+	char ship_3_1[50] = "Niszczyciel (3x[]) x ";
+	char ship_2_1[50] = "Lodz patrolowa (2x[]) x ";
+	char ship_1_1[50] = "Ponton bojowy (2x[]) x ";
+	char buffer_1[50] = "";
+	sprintf(buffer_1, "%d", enemy_ships[3]/4);
+	settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
+	settextjustify(LEFT_TEXT, CENTER_TEXT);
+	outtextxy((screenOffset_width / 2.0) + right_plane_leftOffset -5, 2 * screenOffset_height / 3.0 + 15, strncat(ship_4_1, buffer_1, 20));
+
+	sprintf(buffer_1, "%s", "");
+	sprintf(buffer_1, "%d", enemy_ships[2]/3);
+	outtextxy((screenOffset_width / 2.0) + right_plane_leftOffset -5, 2 * screenOffset_height / 3.0 + 30, strncat(ship_3_1, buffer_1, 20));
+
+	sprintf(buffer_1, "%s", "");
+	sprintf(buffer_1, "%d", enemy_ships[1]/2);
+	outtextxy((screenOffset_width / 2.0) + right_plane_leftOffset -5, 2 * screenOffset_height / 3.0 + 45, strncat(ship_2_1, buffer_1, 20));
+
+	sprintf(buffer_1, "%s", "");
+	sprintf(buffer_1, "%d", enemy_ships[0]);
+	outtextxy((screenOffset_width / 2.0) + right_plane_leftOffset -5, 2 * screenOffset_height / 3.0 + 60, strncat(ship_1_1, buffer_1, 20));
 }
