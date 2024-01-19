@@ -47,6 +47,6 @@ jobs:
     - name: Store_Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: Warships.exe
+        name: Warships
         path: ./x64/Release/Projekt.exe
           
