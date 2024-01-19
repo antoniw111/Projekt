@@ -60,7 +60,7 @@ void displayBoard()
 int welcomeScreen()
 {
 	int option = 0;
-	const char* welcome_msg = "WARSHIPS v1.";
+	const char* welcome_msg = "WARSHIPS v1.0";
 	settextjustify(CENTER_TEXT, CENTER_TEXT);
 	settextstyle(DEFAULT_FONT, HORIZ_DIR, 7);
 	outtextxy(1000 / 2., title_upperOffset, welcome_msg);
