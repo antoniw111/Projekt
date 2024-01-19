@@ -42,11 +42,11 @@ utworzy³em ten rozdzia³ na dwa pliki aby oddzieliæ funkcje gry które s¹ spore
 //---------------------------------------------------
 //---------------funkcje dla gry---------------------
 void displayBoard();//wyœwietlanie pustych plansz
-void displayInstrucions();
+void displayInstrucions();//wyœwietla instrukcje do gry
 int welcomeScreen();//wyœwietlanie ekranu powitalnego i obs³uga jego przycisków
 int cords_to_matrix(int x, int y, int* w, int* k, int tab[10][10], int mode); // mode = 0, lewa plansza, czyli gracz; mode = 1, prawa plansza, czyli, komputer
 void matrix_to_cords(double* x, double* y, int m_x, int m_y,int mode); // mode = 0, lewa plansza, czyli gracz; mode = 1, prawa plansza, czyli, komputer
-void drawShips(int control_tab[10][10], int enemy_control_tab[10][10], int mode); // player_type = 0, analogicznie jak wyzej; rysuje istniej¹ce statki
+void drawShips(int control_tab[10][10], int enemy_control_tab[10][10], int mode); // mode = 1, wyœwietla statki gracza i trafienia komputera i gracza;mode=0 wyœwietla statki komputera
 void random_CPU_ships(int control_tab[10][10]);//losowanie statków komputera
 void place_PLAYER_ships(int player_control_tab[10][10], int enemy_control_tab[10][10]);//gracz uk³ada sobie statki
 int check_surroundings(int w, int k, int control_tab[10][10]);//funkcja do sprawdzania otoczenia podczs losowania pozycji statku

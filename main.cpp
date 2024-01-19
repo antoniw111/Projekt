@@ -15,13 +15,13 @@ utworzy³em ten rozdzia³ na dwa pliki aby oddzieliæ funkcje gry od logiki gry*/
 
 int main()
 {
-	int w = 0;
-	int k = 0;
+	/*int w = 0;
+	int k = 0;*/ //used for debug
 
-	int last_CPU_hit[2] = { 0 };
-	bool did_CPU_hit = false;
-	bool game = true;
-	int win = -1;
+	int last_CPU_hit[2] = { 0 }; //ostatnie trafienie komputera
+	bool did_CPU_hit = false; //czy komputer trafil ostatnie
+	bool game = true; //do petli gry
+	int win = -1; // status wygranej 0 komputer; 1 gracz;-1 nikt
 
 	setcolor(WHITE);
 	graphics(swidth, sheight);
@@ -30,9 +30,9 @@ int main()
 	case 0:
 		return 0;
 	case 1:
-		int enemy_control_tab[10][10] = { 0 };
+		int enemy_control_tab[10][10] = { 0 }; //tablice kontrolne gracza i komputera
 		int player_control_tab[10][10] = { 0 };
-		int player_ships[4] = { 4*1,3*2,2*3,1*4 };
+		int player_ships[4] = { 4*1,3*2,2*3,1*4 };//tablice segmentow poszczegolnych statkow {1-masz,2-masz,3-maszt,4-maszt}
 		int enemy_ships[4] = { 4*1,3*2,2*3,1*4 };
 			/*{1,1,1,1,1,1,0,1,1,1},
 			{0,0,1,1,1,1,1,1,1,1},

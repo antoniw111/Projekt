@@ -3,7 +3,7 @@ Autor: Antoni Wiœniewski
 Nr indeksu: 333516
 Gra w Statki
 
-utworzy³em ten rozdzia³ na dwa pliki aby oddzieliæ funkcje gry od logiki gry*/
+utworzylem ten rozdzial na dwa pliki aby oddzielic funkcje gry od logiki gry*/
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,6 +12,7 @@ utworzy³em ten rozdzia³ na dwa pliki aby oddzieliæ funkcje gry od logiki gry*
 #include <string.h>
 #include "warships.h"
 #include "winbgi2.h"
+//czysci ekran i wyswietla plansze
 void displayBoard()
 {
 	clear();
@@ -55,7 +56,7 @@ void displayBoard()
 
 }
 // Funkcja obslugjaca ekran powitalny
-// 0 jesli urzytkownik kliknal QUIT</para> 1 jesli kliknal PLAY
+// 0 jesli urzytkownik kliknal QUIT 1 jesli kliknal PLAY
 int welcomeScreen()
 {
 	int option = 0;
@@ -91,7 +92,7 @@ int welcomeScreen()
 	}
 	return 0;
 }
-// Funkcja z instrukcjami jak graæ
+// Funkcja z instrukcjami jak grac
 void displayInstrucions()
 {
 	clear();
@@ -120,9 +121,9 @@ void displayInstrucions()
 	}
 }
 // Funkcja do tlumaczenia wspolrzednych na ekranie, na indeksy tablicy 2d
-// Zwraca watroœæ któr¹ znalaz³a w tablicy jeœli mode !=1 lub 200 jeœli nie znalaz³a,
-// zwraca poprzez wskaŸnik wiersz i kolumne  w tablicy
-//  Gdy mode = 1 nie zwraca elementu tablicy tolko 0
+// Zwraca wartosc ktora znalazl w tablicy jesli mode !=1 lub 200 jesli nie znalazl oraz indeksy tablicy odpowiadajace planszy komputera poprzez wskaznik
+// jesli mode = 1 to zwraca tylko indeksy odpowiadajace planszy gracza
+// zwrocenie 200 oznacza nie znalezienie odpowiednich wspolrzednych
 int cords_to_matrix(int x, int y,int* w,int* k, int tab[10][10], int mode)
 {
 	if (mode == 1)
@@ -176,6 +177,8 @@ int cords_to_matrix(int x, int y,int* w,int* k, int tab[10][10], int mode)
 		
 	}
 }
+//funkcja do tlumaczenia indeksow tablicy 2d na wspolrzedne
+//mode=1 wspolrzedne na planszy gracza;mode = 0 wspolrzendne na planszy komputera
 void matrix_to_cords(double* x, double* y, int m_w, int m_k, int mode)
 {
 	if (mode == 1)
@@ -1439,6 +1442,8 @@ void random_CPU_ships(int control_tab[10][10])
 		
 	}
 }
+//funkcja do ukladania statkow na planszy gracza
+//przjmuje tablice kontrolna gracza oraz tablice komputera ale tylko bo wywolujemy funcje drawShips
 void place_PLAYER_ships(int player_control_tab[10][10], int enemy_control_tab[10][10])
 {
 	int ships_to_place[4] = { 4,3,2,1 };
@@ -1773,7 +1778,8 @@ int check_surroundings(int w, int k, int control_tab[10][10])
 	}
 	return -1;
 }
-
+//zwraca poprzez wskaznik pole w ktore strzela komputer,przyjmuje jako argumenty czy komputer trafil
+//  wczesniejszy strzal aby szukac w jego okolicy statku oraz wspolrzedne ostatniego trafienia
 void CPU_shoot(int* w, int* k, int control_tab[10][10], int last_CPU_hit[2],bool* did_CPU_hit)
 {
 	bool heading_found = true;
@@ -1818,7 +1824,7 @@ void CPU_shoot(int* w, int* k, int control_tab[10][10], int last_CPU_hit[2],bool
 		}
 	}
 }
-
+//zwraca 0 jeśli trafimy; -1 jesli nie
 int PLAYER_shoot(int* w, int* k,int control_tab[10][10])
 {
 	bool shoot = true;
@@ -1847,7 +1853,8 @@ int PLAYER_shoot(int* w, int* k,int control_tab[10][10])
 		}
 	}
 }
-
+//funkcja przyjmuje tablice kontrolne obu graczy i tablice ilosci segnmentow danych statkow oraz wartosci ostaniego trafienia komputera oraz czy trafil
+//zwraca 0 jesli wygra komputer;1 jesli wygra gracz;-1 jesli jest nie rozsztygniete
 int PLAY(int player_control_tab[10][10], int enemy_control_tab[10][10], int player_ships[4], int enemy_ships[4], int last_CPU_hit[2], bool* did_CPU_hit)
 {
 	bool win = false;
@@ -1888,7 +1895,7 @@ int PLAY(int player_control_tab[10][10], int enemy_control_tab[10][10], int play
 	if (enemy_ships[0] == 0 && enemy_ships[1] ==0 && enemy_ships[2] == 0 && enemy_ships[3] == 0) return 1;
 	return -1;
 }
-
+//przyjmuje tablice segmentow statkow gracza i komputera oraz wypisuje je na ekran
 void drawScore(int player_ships[4], int enemy_ships[4])
 {
 	char ship_4[50] = "Lotniskowiec (4x[]) x ";
