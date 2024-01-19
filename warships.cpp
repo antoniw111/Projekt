@@ -1,9 +1,9 @@
 /*
-Autor: Antoni Wiúniewski
+Autor: Antoni Wi≈ìniewski
 Nr indeksu: 333516
 Gra w Statki
 
-utworzy≥em ten rozdzia≥ na dwa pliki aby oddzieliÊ funkcje gry od logiki gry*/
+utworzy¬≥em ten rozdzia¬≥ na dwa pliki aby oddzieli√¶ funkcje gry od logiki gry*/
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,9 +16,9 @@ void displayBoard()
 {
 	clear();
 	rectangle(5, 5, x_end, y_end);
-	//podzia≥ka na graczy
+	//podzia¬≥ka na graczy
 	line(screenOffset_width / 2.0, 5, screenOffset_width / 2.0, y_end);
-	//podzia≥ka pola jednego gracza 1:2
+	//podzia¬≥ka pola jednego gracza 1:2
 	line(5, 2 * screenOffset_height / 3.0, x_end, 2 * screenOffset_height / 3.0);
 	//plansza gracza i komputera
 	
@@ -66,7 +66,7 @@ int welcomeScreen()
 	settextstyle(DEFAULT_FONT, HORIZ_DIR, 5);
 	outtextxy(1000 / 2., title_upperOffset + 150, "Play");
 	outtextxy(1000 / 2., title_upperOffset + 300, "Quit");
-	//while (!(mousedown())) //FUNKCJA DO TEST”W
+	//while (!(mousedown())) //FUNKCJA DO TEST√ìW
 	//{
 	//	printf("x: %d y: %d\n", mousecurrentx(), mousecurrenty());
 	//	system("cls");
@@ -91,7 +91,7 @@ int welcomeScreen()
 	}
 	return 0;
 }
-// Funkcja z instrukcjami jak graÊ
+// Funkcja z instrukcjami jak gra√¶
 void displayInstrucions()
 {
 	clear();
@@ -103,7 +103,7 @@ void displayInstrucions()
 	outtextxy(1000 / 2., 100, "Musisz ustawic swoje statki.Zaczniesz od statkow jednomasztowych i");
 	outtextxy(1000 / 2., 130,"potem przejdziemy do wiekszych.");
 	outtextxy(1000 / 2., 160, "PAMIETAJ STATKI NIE MOGA STYKAC SIE ROGAMI ANI BOKAMI\n");
-	outtextxy(1000 / 2., 190,"Wieksze statki stawiaj klikajac w kratke poczatkowa i po kolei w nastÍpne NIE ROB SKOSOW");
+	outtextxy(1000 / 2., 190,"Wieksze statki stawiaj klikajac w kratke poczatkowa i po kolei w nast√™pne NIE ROB SKOSOW");
 	outtextxy(1000 / 2., 210, "Gdy bedziesz gotowy gra rozpocznie twoja runde strzalu.");
 	outtextxy(1000 / 2., 240,"Kliknij na prawej szachownicy tam gdzie chcesz poslac pocisk.");
 	outtextxy(1000 / 2., 270, "Czerwony oznacza trafienie, bialy pudlo");
@@ -120,8 +120,8 @@ void displayInstrucions()
 	}
 }
 // Funkcja do tlumaczenia wspolrzednych na ekranie, na indeksy tablicy 2d
-// Zwraca watroúÊ ktÛrπ znalaz≥a w tablicy jeúli mode !=1 lub 200 jeúli nie znalaz≥a,
-// zwraca poprzez wskaünik wiersz i kolumne  w tablicy
+// Zwraca watro≈ì√¶ kt√≥r¬π znalaz¬≥a w tablicy je≈ìli mode !=1 lub 200 je≈ìli nie znalaz¬≥a,
+// zwraca poprzez wska≈∏nik wiersz i kolumne  w tablicy
 //  Gdy mode = 1 nie zwraca elementu tablicy tolko 0
 int cords_to_matrix(int x, int y,int* w,int* k, int tab[10][10], int mode)
 {
@@ -264,7 +264,7 @@ void random_CPU_ships(int control_tab[10][10])
 	int ship_type = 4;
 	int ship_made[4] = { 4,3,2,1 };
 	bool place_success = false, heading_success = false;
-	int heading = 0; // 1 = gÛra; 2 = prawo; 3 = dÛ≥ 4 = lewo
+	int heading = 0; // 1 = g√≥ra; 2 = prawo; 3 = d√≥¬≥ 4 = lewo
 	srand(time(NULL));
 	for (int i = 0; i < 10; i++)
 	{
@@ -319,7 +319,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1) //gÛra
+							if (check_surroundings(w - 1, k, control_tab) != -1) //g√≥ra
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -339,7 +339,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1) //dÛ≥
+							if (check_surroundings(w + 1, k, control_tab) != -1) //d√≥¬≥
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -361,7 +361,7 @@ void random_CPU_ships(int control_tab[10][10])
 						}
 					}
 					break;
-				case 1: //losujemy tylko 2 lub trÛjke czyli prawo i dÛ≥
+				case 1: //losujemy tylko 2 lub tr√≥jke czyli prawo i d√≥¬≥
 					heading_success = false;
 					while (!heading_success)
 					{
@@ -379,7 +379,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1) //dÛ≥
+							if (check_surroundings(w + 1, k, control_tab) != -1) //d√≥¬≥
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -391,7 +391,7 @@ void random_CPU_ships(int control_tab[10][10])
 						}
 					}
 					break;
-				case 2: //losujemy wszystko oprÛcz gÛry czyli 2,3,4
+				case 2: //losujemy wszystko opr√≥cz g√≥ry czyli 2,3,4
 					heading_success = false;
 					while (!heading_success)
 					{
@@ -409,7 +409,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1) //dÛ≥
+							if (check_surroundings(w + 1, k, control_tab) != -1) //d√≥¬≥
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -431,7 +431,7 @@ void random_CPU_ships(int control_tab[10][10])
 						}
 					}
 					break;
-				case 3: //wszystko oprÛcz lewo czyli 1,2,3
+				case 3: //wszystko opr√≥cz lewo czyli 1,2,3
 					heading_success = false;
 					while (!heading_success)
 					{
@@ -439,7 +439,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1) //gÛra
+							if (check_surroundings(w - 1, k, control_tab) != -1) //g√≥ra
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -459,7 +459,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1) //dÛ≥
+							if (check_surroundings(w + 1, k, control_tab) != -1) //d√≥¬≥
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -471,7 +471,7 @@ void random_CPU_ships(int control_tab[10][10])
 						}
 					}
 					break;
-				case 4: //lewo i gÛra (1 lub 4)
+				case 4: //lewo i g√≥ra (1 lub 4)
 					heading_success = false;
 					while (!heading_success)
 					{
@@ -505,7 +505,7 @@ void random_CPU_ships(int control_tab[10][10])
 					heading_success = false;
 					while (!heading_success)
 					{
-						heading = rand() % 3;  //muszÍ zmeiniÊ koncepcje bo losowanie z 1,2,4
+						heading = rand() % 3;  //musz√™ zmeini√¶ koncepcje bo losowanie z 1,2,4
 						if (heading == 0) heading = 1;
 						if (heading == 1) heading = 2;
 						if (heading == 2) heading = 4;
@@ -555,7 +555,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1) //gÛra
+							if (check_surroundings(w - 1, k, control_tab) != -1) //g√≥ra
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -565,7 +565,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1) //dÛ≥
+							if (check_surroundings(w + 1, k, control_tab) != -1) //d√≥¬≥
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -595,7 +595,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 1:
-							if(check_surroundings(w - 1, k, control_tab) != -1) //gÛra
+							if(check_surroundings(w - 1, k, control_tab) != -1) //g√≥ra
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -625,7 +625,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1) //dÛ≥
+							if (check_surroundings(w + 1, k, control_tab) != -1) //d√≥¬≥
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -675,7 +675,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1 && w>1 && check_surroundings(w - 2, k, control_tab) != -1) //gÛra dla 3
+							if (check_surroundings(w - 1, k, control_tab) != -1 && w>1 && check_surroundings(w - 2, k, control_tab) != -1) //g√≥ra dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -697,7 +697,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							else heading_success = true;break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1 && w<8 && check_surroundings(w + 2, k, control_tab) != -1) //dÛ≥ dla 3
+							if (check_surroundings(w + 1, k, control_tab) != -1 && w<8 && check_surroundings(w + 2, k, control_tab) != -1) //d√≥¬≥ dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -721,7 +721,7 @@ void random_CPU_ships(int control_tab[10][10])
 						}
 					}
 					break;
-				case 1: //losujemy tylko 2 lub trÛjke czyli prawo i dÛ≥
+				case 1: //losujemy tylko 2 lub tr√≥jke czyli prawo i d√≥¬≥
 					heading_success = false;
 					while (!heading_success)
 					{
@@ -740,7 +740,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							else heading_success = true;break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 8 && check_surroundings(w + 2, k, control_tab) != -1) //dÛ≥ dla 3
+							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 8 && check_surroundings(w + 2, k, control_tab) != -1) //d√≥¬≥ dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -753,7 +753,7 @@ void random_CPU_ships(int control_tab[10][10])
 						}
 					}
 					break;
-				case 2: //losujemy wszystko oprÛcz gÛry czyli 2,3,4
+				case 2: //losujemy wszystko opr√≥cz g√≥ry czyli 2,3,4
 					heading_success = false;
 					while (!heading_success)
 					{
@@ -772,7 +772,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							else heading_success = true;break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 8 && check_surroundings(w + 2, k, control_tab) != -1) //dÛ≥ dla 3
+							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 8 && check_surroundings(w + 2, k, control_tab) != -1) //d√≥¬≥ dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -796,7 +796,7 @@ void random_CPU_ships(int control_tab[10][10])
 						}
 					}
 					break;
-				case 3: //wszystko oprÛcz lewo czyli 1,2,3
+				case 3: //wszystko opr√≥cz lewo czyli 1,2,3
 					heading_success = false;
 					while (!heading_success)
 					{
@@ -804,7 +804,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 1 && check_surroundings(w - 2, k, control_tab) != -1) //gÛra dla 3
+							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 1 && check_surroundings(w - 2, k, control_tab) != -1) //g√≥ra dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -826,7 +826,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							else heading_success = true;break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 8 && check_surroundings(w + 2, k, control_tab) != -1) //dÛ≥ dla 3
+							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 8 && check_surroundings(w + 2, k, control_tab) != -1) //d√≥¬≥ dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -839,7 +839,7 @@ void random_CPU_ships(int control_tab[10][10])
 						}
 					}
 					break;
-				case 4: //lewo i gÛra (1 lub 4)
+				case 4: //lewo i g√≥ra (1 lub 4)
 					heading_success = false;
 					while (!heading_success)
 					{
@@ -847,7 +847,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 1 && check_surroundings(w - 2, k, control_tab) != -1) //gÛra dla 3
+							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 1 && check_surroundings(w - 2, k, control_tab) != -1) //g√≥ra dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -875,14 +875,14 @@ void random_CPU_ships(int control_tab[10][10])
 					heading_success = false;
 					while (!heading_success)
 					{
-						heading = rand() % 3;  //muszÍ zmeiniÊ koncepcje bo losowanie z 1,2,4
+						heading = rand() % 3;  //musz√™ zmeini√¶ koncepcje bo losowanie z 1,2,4
 						if (heading == 0) heading = 1;
 						if (heading == 1) heading = 2;
 						if (heading == 2) heading = 4;
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 1 && check_surroundings(w - 2, k, control_tab) != -1) //gÛra dla 3
+							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 1 && check_surroundings(w - 2, k, control_tab) != -1) //g√≥ra dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -928,7 +928,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 1 && check_surroundings(w - 2, k, control_tab) != -1) //gÛra dla 3
+							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 1 && check_surroundings(w - 2, k, control_tab) != -1) //g√≥ra dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -939,7 +939,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							else heading_success = true;break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 8 && check_surroundings(w + 2, k, control_tab) != -1) //dÛ≥ dla 3
+							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 8 && check_surroundings(w + 2, k, control_tab) != -1) //d√≥¬≥ dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -971,7 +971,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 1 && check_surroundings(w - 2, k, control_tab) != -1) //gÛra dla 3
+							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 1 && check_surroundings(w - 2, k, control_tab) != -1) //g√≥ra dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -1003,7 +1003,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 8 && check_surroundings(w + 2, k, control_tab) != -1) //dÛ≥ dla 3
+							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 8 && check_surroundings(w + 2, k, control_tab) != -1) //d√≥¬≥ dla 3
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -1055,7 +1055,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 2 && check_surroundings(w - 2, k, control_tab) != -1 && check_surroundings(w - 3, k, control_tab) != -1) //gÛra dla 4
+							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 2 && check_surroundings(w - 2, k, control_tab) != -1 && check_surroundings(w - 3, k, control_tab) != -1) //g√≥ra dla 4
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -1079,7 +1079,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							else heading_success = true;break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //dÛ≥ dla 4
+							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //d√≥¬≥ dla 4
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -1105,7 +1105,7 @@ void random_CPU_ships(int control_tab[10][10])
 						}
 					}
 					break;
-				case 1: //losujemy tylko 2 lub trÛjke czyli prawo i dÛ≥
+				case 1: //losujemy tylko 2 lub tr√≥jke czyli prawo i d√≥¬≥
 					heading_success = false;
 					while (!heading_success)
 					{
@@ -1125,7 +1125,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							else heading_success = true;break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //dÛ≥ dla 4
+							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //d√≥¬≥ dla 4
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -1139,7 +1139,7 @@ void random_CPU_ships(int control_tab[10][10])
 						}
 					}
 					break;
-				case 2: //losujemy wszystko oprÛcz gÛry czyli 2,3,4
+				case 2: //losujemy wszystko opr√≥cz g√≥ry czyli 2,3,4
 					heading_success = false;
 					while (!heading_success)
 					{
@@ -1159,7 +1159,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							else heading_success = true;break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //dÛ≥ dla 4
+							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //d√≥¬≥ dla 4
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -1185,7 +1185,7 @@ void random_CPU_ships(int control_tab[10][10])
 						}
 					}
 					break;
-				case 3: //wszystko oprÛcz lewo czyli 1,2,3
+				case 3: //wszystko opr√≥cz lewo czyli 1,2,3
 					heading_success = false;
 					while (!heading_success)
 					{
@@ -1193,7 +1193,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 2 && check_surroundings(w - 2, k, control_tab) != -1 && check_surroundings(w - 3, k, control_tab) != -1) //gÛra dla 4
+							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 2 && check_surroundings(w - 2, k, control_tab) != -1 && check_surroundings(w - 3, k, control_tab) != -1) //g√≥ra dla 4
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -1217,7 +1217,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							else heading_success = true;break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //dÛ≥ dla 4
+							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //d√≥¬≥ dla 4
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -1231,7 +1231,7 @@ void random_CPU_ships(int control_tab[10][10])
 						}
 					}
 					break;
-				case 4: //lewo i gÛra (1 lub 4)
+				case 4: //lewo i g√≥ra (1 lub 4)
 					heading_success = false;
 					while (!heading_success)
 					{
@@ -1239,7 +1239,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 2 && check_surroundings(w - 2, k, control_tab) != -1 && check_surroundings(w - 3, k, control_tab) != -1) //gÛra dla 4
+							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 2 && check_surroundings(w - 2, k, control_tab) != -1 && check_surroundings(w - 3, k, control_tab) != -1) //g√≥ra dla 4
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -1269,14 +1269,14 @@ void random_CPU_ships(int control_tab[10][10])
 					heading_success = false;
 					while (!heading_success)
 					{
-						heading = rand() % 3;  //muszÍ zmeiniÊ koncepcje bo losowanie z 1,2,4
+						heading = rand() % 3;  //musz√™ zmeini√¶ koncepcje bo losowanie z 1,2,4
 						if (heading == 0) heading = 1;
 						if (heading == 1) heading = 2;
 						if (heading == 2) heading = 4;
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 2 && check_surroundings(w - 2, k, control_tab) != -1 && check_surroundings(w - 3, k, control_tab) != -1) //gÛra dla 4
+							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 2 && check_surroundings(w - 2, k, control_tab) != -1 && check_surroundings(w - 3, k, control_tab) != -1) //g√≥ra dla 4
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -1325,7 +1325,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 2 && check_surroundings(w - 2, k, control_tab) != -1 && check_surroundings(w - 3, k, control_tab) != -1) //gÛra dla 4
+							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 2 && check_surroundings(w - 2, k, control_tab) != -1 && check_surroundings(w - 3, k, control_tab) != -1) //g√≥ra dla 4
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -1337,7 +1337,7 @@ void random_CPU_ships(int control_tab[10][10])
 							}
 							else heading_success = true;break;
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //dÛ≥ dla 4
+							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //d√≥¬≥ dla 4
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -1371,7 +1371,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 1:
-							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 2 && check_surroundings(w - 2, k, control_tab) != -1 && check_surroundings(w - 3, k, control_tab) != -1) //gÛra dla 4
+							if (check_surroundings(w - 1, k, control_tab) != -1 && w > 2 && check_surroundings(w - 2, k, control_tab) != -1 && check_surroundings(w - 3, k, control_tab) != -1) //g√≥ra dla 4
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w - 1][k] = ship_type;
@@ -1405,7 +1405,7 @@ void random_CPU_ships(int control_tab[10][10])
 						switch (heading)
 						{
 						case 3:
-							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //dÛ≥ dla 4
+							if (check_surroundings(w + 1, k, control_tab) != -1 && w < 7 && check_surroundings(w + 2, k, control_tab) != -1 && check_surroundings(w + 3, k, control_tab) != -1) //d√≥¬≥ dla 4
 							{
 								control_tab[w][k] = ship_type;
 								control_tab[w + 1][k] = ship_type;
@@ -1782,7 +1782,7 @@ void CPU_shoot(int* w, int* k, int control_tab[10][10], int last_CPU_hit[2],bool
 	{
 		while(heading_found)
 		{
-			int heading = rand() % 4 + 1; // kalsycznie 1-gÛra; 2-prawo; 3-dÛ≥; 4-lewo
+			int heading = rand() % 4 + 1; // kalsycznie 1-g√≥ra; 2-prawo; 3-d√≥¬≥; 4-lewo
 			switch (heading)
 			{
 			case 1:
@@ -1864,7 +1864,7 @@ int PLAY(int player_control_tab[10][10], int enemy_control_tab[10][10], int play
 	}
 	else enemy_control_tab[w][k] = -2;
 	CPU_shoot(&w, &k, player_control_tab,last_CPU_hit, did_CPU_hit);
-	if (player_control_tab[w][k] < 0)
+	if (player_control_tab[w][k] > 0)
 	{
 		player_ships[player_control_tab[w][k] - 1]--;
 		player_control_tab[w][k] = -1;
